@@ -6,7 +6,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 module.exports = {
   context: path.resolve(__dirname, 'src'),
   mode: 'development',
-  entry: './index.js',
+  entry: './index.ts',
+  devtool: 'inline-source-map',
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
@@ -14,12 +15,18 @@ module.exports = {
   plugins: [
     new HTMLWebpackPlugin({
       title: 'match-match-game',
+      template: './index.html',
     }),
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin()
   ],
   module: {
     rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
       {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
@@ -37,5 +44,8 @@ module.exports = {
         use: ['file-loader'],
       }
     ]
-  }
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+  },
 }

@@ -1,5 +1,12 @@
-h1 {
-  font-size: 29px;
-  color: blue;
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.container {
+  width: 1440px;
+  margin: 0 auto;
 }
 /*# sourceMappingURL=styles.css.map */
