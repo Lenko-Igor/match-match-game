@@ -1,7 +1,7 @@
 import './header.css';
-import CreateElement from '../../create-element';
+import BaseComponent from '../../base-component';
 
-export default class Header {
+export default class Header extends BaseComponent {
   readonly feild: HTMLElement
   readonly container: HTMLElement
   readonly logo: HTMLElement
@@ -9,7 +9,8 @@ export default class Header {
   readonly button: HTMLElement
   
   constructor() {
-    this.feild = new CreateElement('header', ['header'], '').element;
+    super()
+    this.feild = this.createElement('header', ['header'], '');
     this.container = this.createContainer();
     this.logo = this.createLogo();
     this.menu = this.createMenu();
@@ -19,13 +20,13 @@ export default class Header {
   }
 
   createContainer(): HTMLElement  {
-    const container = new CreateElement('div', ['container','header-container'], '');
-    return container.element
+    return this.createElement('div', ['container','header-container'], '');
   }
 
   createLogo(): HTMLElement {
-    const logo = new CreateElement('div', ['header-logo'], '');
-    logo.element.innerHTML = `
+    const logo = this.createElement('div', ['header-logo'], '')
+    
+    logo.innerHTML = `
       <div class="logo-up">
         <p class="logo-text">MATCH</p>
       </div>
@@ -33,25 +34,38 @@ export default class Header {
         <p class="logo-text">MATCH</p>
       </div>
     `
-    return logo.element
+    return logo;
   }
 
   createMenu(): HTMLElement  {
-    const menu = new CreateElement('menu', [], '');
-    menu.element.innerHTML = `
+    const menu = this.createElement('menu', ['menu'], '')
+    
+    menu.innerHTML = `
       <ul class="header-menu__items">
-        <li class="header-menu__item">About Game</li>
-        <li class="header-menu__item">Best Score</li>
-        <li class="header-menu__item">Game Settings</li>
+        <li class="header-menu__item item-about item-select">
+          <div class="header-menu__img"><p>?</p></div>
+          <p class="header-menu__text">About Game</p>  
+        </li>
+        <li class="header-menu__item item-score">
+          <div class="header-menu__img"></div>
+          <p class="header-menu__text">Best Score</p> 
+        </li>
+        <li class="header-menu__item item-setting">
+          <div class="header-menu__img"></div>
+          <p class="header-menu__text">Game Settings</p>
+        </li>
       </ul>
     `
-    return menu.element;
+    return menu;
   }
 
   createButton(): HTMLElement {
-    const button = new CreateElement('button', ['header-button'], '');
-    button.element.innerHTML = 'register new player';
-    return button.element;
+    const button = this.createElement('button', ['header-button'], '')
+    
+    button.innerHTML = `
+      <p class="header-button__text">register new player</p>
+    `;
+    return button;
   }
 
   toPlaceElements(wrap: HTMLElement, arr: HTMLElement[]) {

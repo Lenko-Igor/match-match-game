@@ -5,7 +5,7 @@
 }
 
 .header .header-container {
-  padding: 12px 0;
+  height: 64px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -44,28 +44,134 @@
   padding-top: 2px;
 }
 
-.header .header-container .header-menu__items {
+.header .header-container .menu {
+  width: 100%;
+}
+
+.header .header-container .menu .header-menu__items {
+  width: 576px;
+  height: 64px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  list-style-type: none;
 }
 
-.header .header-container .header-menu__items .header-menu__item {
+.header .header-container .menu .header-menu__items .header-menu__item {
   width: 96px;
   color: white;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  cursor: pointer;
+}
+
+.header .header-container .menu .header-menu__items .header-menu__item .header-menu__img {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px 10px;
+  margin-bottom: 9px;
+}
+
+.header .header-container .menu .header-menu__items .header-menu__item .header-menu__text {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 15px;
+  text-align: center;
+  letter-spacing: 0.4px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.header .header-container .menu .header-menu__items .header-menu__item:hover {
+  background: #1E88E5;
+}
+
+.header .header-container .menu .header-menu__items .item-about .header-menu__img {
+  background-color: #ffffff;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.header .header-container .menu .header-menu__items .item-about .header-menu__img p {
+  color: #2196F3;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 15px;
+  text-align: center;
+}
+
+.header .header-container .menu .header-menu__items .item-score .header-menu__img {
+  background: url("../../images/icons/star.svg") no-repeat center;
+}
+
+.header .header-container .menu .header-menu__items .item-setting .header-menu__img {
+  background: url("../../images/icons/setting.svg") no-repeat center #ffffff;
+}
+
+.header .header-container .menu .header-menu__items .item-select {
+  background: #1E88E5;
+}
+
+.header .header-container .menu .header-menu__items .item-select .header-menu__text {
+  color: #ffffff;
 }
 
 .header .header-container .header-button {
-  display: block;
-  width: 207px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  min-width: 207px;
   height: 36px;
-  text-align: center;
-  letter-spacing: 1.25px;
-  text-transform: uppercase;
+  border: none;
+  outline: none;
   cursor: pointer;
   background: #F2F9FE;
   -webkit-box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2), 0px 1px 18px rgba(0, 0, 0, 0.12), 0px 6px 10px rgba(0, 0, 0, 0.14);
           box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2), 0px 1px 18px rgba(0, 0, 0, 0.12), 0px 6px 10px rgba(0, 0, 0, 0.14);
   border-radius: 4px;
+}
+
+.header .header-container .header-button .header-button__text {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  text-align: center;
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+  color: #2196F3;
+}
+
+.header .header-container .header-button:hover {
+  -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.64);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.64);
 }
 /*# sourceMappingURL=header.css.map */

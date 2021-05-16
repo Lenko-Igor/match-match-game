@@ -1,18 +1,30 @@
-import AboutPage from './pages/about/about'
+import BaseComponent from './base-component'; 
+import AboutPage from './pages/about/about';
+import RegistrationForm from './pages/registration/registration-form';
 
-export default function mvc(wrap: HTMLElement) {
+
+export default function mvc(app: HTMLElement) {
   // View
   class View {
-    readonly wrap: HTMLElement
+    readonly app: HTMLElement;
+    readonly modalFeild: HTMLElement;
+    readonly modalWindow: HTMLElement;
 
-    constructor(wrap: HTMLElement) {
-      this.wrap = wrap;
-      this.showPage() 
+    constructor(app: HTMLElement) {
+      this.app = app;
+      this.modalFeild = new BaseComponent().createElement('div', ['modal-feild'], '');
+      this.modalWindow = new RegistrationForm().modalWindow;
+      this.init();
+      this.showPage(); 
+    }
+    
+    init() {
+      this.modalFeild.append(this.modalWindow);
+      this.app.before(this.modalFeild);
     }
 
     showPage() {
-      const aboutPage = new AboutPage();
-      this.wrap.prepend(aboutPage.header);
+      new AboutPage(this.app, false);
     }
   }
   // Model
@@ -26,16 +38,16 @@ export default function mvc(wrap: HTMLElement) {
 
   // Controller
   class Controller {
-    readonly wrap: HTMLElement
+    readonly app: HTMLElement
     private model: object
 
-    constructor(wrap: HTMLElement, model: object){
-      this.wrap = wrap;
+    constructor(app: HTMLElement, model: object){
+      this.app = app;
       this.model = model;
     }
   }
 
-  const view = new View(wrap);
+  const view = new View(app);
   const model = new Model(view);
-  const controller = new Controller(wrap, model);
+  const controller = new Controller(app, model);
 }
