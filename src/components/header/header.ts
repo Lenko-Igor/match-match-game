@@ -15,8 +15,12 @@ export default class Header extends BaseComponent {
     this.logo = this.createLogo();
     this.menu = this.createMenu();
     this.button = this.createButton();
+  }
+
+  getHeader():HTMLElement {
     this.toPlaceElements(this.container, [this.logo, this.menu, this.button]);
-    this.toPlaceElements(this.feild, [this.container])
+    this.toPlaceElements(this.feild, [this.container]);
+    return this.feild;
   }
 
   createContainer(): HTMLElement  {
@@ -60,7 +64,8 @@ export default class Header extends BaseComponent {
   }
 
   createButton(): HTMLElement {
-    const button = this.createElement('button', ['header-button'], '')
+    const button = this.createElement('button', ['header-button'], '');
+    button.id = 'regBtn';
     
     button.innerHTML = `
       <p class="header-button__text">register new player</p>

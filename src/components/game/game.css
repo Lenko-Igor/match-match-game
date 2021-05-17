@@ -1,0 +1,13 @@
+.main-container {
+  padding: 33px 0 0;
+}
+
+.main-container .wrap-content {
+  width: 1000px;
+  height: 802px;
+  padding: 28px 36px 85px;
+  margin: 0 auto;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 5px;
+}
+/*# sourceMappingURL=game.css.map */
