@@ -5,6 +5,7 @@
 }
 
 .header .header-container {
+  position: relative;
   height: 64px;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -138,7 +139,16 @@
   color: #ffffff;
 }
 
-.header .header-container .header-button {
+.header .header-container .header-button-feild {
+  position: absolute;
+  top: 15px;
+  right: 0;
+}
+
+.header .header-container .header-button-feild .header-button {
+  position: absolute;
+  top: 0;
+  right: 0;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -159,7 +169,7 @@
   border-radius: 4px;
 }
 
-.header .header-container .header-button .header-button__text {
+.header .header-container .header-button-feild .header-button .header-button__text {
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -170,8 +180,16 @@
   color: #2196F3;
 }
 
-.header .header-container .header-button:hover {
+.header .header-container .header-button-feild .header-button:hover {
   -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.64);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.64);
+}
+
+.header .header-container .header-button-feild .header-button-start {
+  min-width: 130px;
+}
+
+.header .header-container .header-button-feild .hidden {
+  display: none;
 }
 /*# sourceMappingURL=header.css.map */

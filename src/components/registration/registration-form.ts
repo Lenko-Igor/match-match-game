@@ -19,15 +19,18 @@ export default class RegistrationForm extends BaseComponent{
       <form class="modal-form">
         <div class="form-block">
           <label for="firstName" class="modal-form__label">First Name</label>
-          <input type="text" class="modal-form__input" name="firstName" id="firstName" required placeholder="...">        
+          <input type="text" class="modal-form__input" name="firstName" id="firstName" required placeholder="..." value="">     
+          <div class="form-block__check error"></div>   
         </div>
         <div class="form-block">
           <label for="lastName" class="modal-form__label">Last Name</label>
-          <input type="text" class="modal-form__input" name="lastName" id="lastName" required placeholder="...">        
+          <input type="text" class="modal-form__input" name="lastName" id="lastName" required placeholder="...">   
+          <div class="form-block__check error"></div>      
         </div>
         <div class="form-block">
           <label for="email" class="modal-form__label">E-mail</label>
-          <input type="email" class="modal-form__input" name="email" id="email" required placeholder="...">        
+          <input type="email" class="modal-form__input" name="email" id="email" required placeholder="..."> 
+          <div class="form-block__check error"></div>        
         </div>
       </form>
     `

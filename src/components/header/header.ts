@@ -64,13 +64,20 @@ export default class Header extends BaseComponent {
   }
 
   createButton(): HTMLElement {
-    const button = this.createElement('button', ['header-button'], '');
-    button.id = 'regBtn';
-    
-    button.innerHTML = `
+    const buttonFeild = this.createElement('div', ['header-button-feild'], '');
+    const buttonStartGame = this.createElement('button', ['header-button', 'header-button-start', 'hidden'], 'startGame');
+    const buttonRegistration = this.createElement('button', ['header-button'], 'regBtn');
+
+    buttonStartGame.innerHTML = `
+      <p class="header-button__text">start game</p>
+    `;
+    buttonRegistration.innerHTML = `
       <p class="header-button__text">register new player</p>
     `;
-    return button;
+    buttonFeild.append(buttonStartGame);
+    buttonFeild.append(buttonRegistration);
+    
+    return buttonFeild;
   }
 
   toPlaceElements(wrap: HTMLElement, arr: HTMLElement[]) {

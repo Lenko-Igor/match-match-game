@@ -10,8 +10,8 @@ export default class extends BaseComponent {
     return this.createGame();
   }
 
-  createContent() {
-
+  createContent(): string {
+    return `<h1>GAME</h1>`
   }
 
   createGame(): HTMLElement {
@@ -19,7 +19,7 @@ export default class extends BaseComponent {
     const container = this.createElement('div', ['container', 'main-container'], '');
     const wrapContent = this.createElement('div', ['wrap-content'], '');
 
-    //wrapContent.innerHTML = this.createContent();
+    wrapContent.innerHTML = this.createContent();
     container.append(wrapContent);
     main.append(container);
     return main;
