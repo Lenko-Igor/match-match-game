@@ -115,14 +115,10 @@
         cursor: pointer;
         border: none;
         outline: none;
-        &:hover {
-          box-shadow: 5px 5px 5px 1px rgba(0,0,0,0.35);
-        }
       }
       .add {
         width: 108px;
         height: 36px;
-        background: #2196F3;
         box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.12), 0px 2px 2px rgba(0, 0, 0, 0.24);
         border-radius: 4px;
         margin-right: 17px;
@@ -135,6 +131,15 @@
           letter-spacing: 1.25px;
           text-transform: uppercase;
           color: #FFFFFF;
+        }
+      }
+      .disabled {
+        background: #93c6ef;
+      }
+      .active {
+        background: #2196F3;
+        &:hover {
+          box-shadow: 5px 5px 5px 1px rgba(0,0,0,0.35);
         }
       }
       .cancel {
@@ -152,6 +157,9 @@
           letter-spacing: 1.25px;
           text-transform: uppercase;
           color: #2196F3;
+        }
+        &:hover {
+          box-shadow: 5px 5px 5px 1px rgba(0,0,0,0.35);
         }
       }
     }

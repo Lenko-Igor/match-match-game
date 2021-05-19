@@ -32,8 +32,8 @@ export default function mvc(app: HTMLElement) {
 
     showFirstPage() {
       this.app.append(this.header);
-      //this.app.append(this.AboutPage);
-      this.app.append(this.GamePage);   // для наглядности пока вставил 
+      this.app.append(this.AboutPage);
+      //this.app.append(this.GamePage);   // для наглядности пока вставил 
     }
 
     showModalWindow() {
@@ -61,18 +61,31 @@ export default function mvc(app: HTMLElement) {
       } else {
         input?.nextElementSibling?.classList.add('error');
       }
+    }
 
+    showStylesdAddButton(status: boolean) {
+      const buttonAdd = document.querySelector('#add');
+      
+      if (!buttonAdd) throw 'error';
+
+      if (status) {
+        buttonAdd.classList.add('disabled');
+        buttonAdd.classList.remove('active');
+      } else {
+        buttonAdd.classList.remove('disabled');
+        buttonAdd.classList.add('active');
+      }
     }
   }
   // Model
   class Model {
     private view: View;
-    private data: object[];
+    data: any[];   // переделать как-то на объект
 
     constructor(view: View){
       this.view = view;
+      this.data = [{firstName: '', lastName: '', email: ''}];  // переделать как-то на объект
       this.init();
-      this.data = [];
     }
 
     init() {
@@ -93,18 +106,53 @@ export default function mvc(app: HTMLElement) {
 
     checkValueInput(id: string, value: string) {
       const regName = /^[a-zA-Zа-яА-Я]+$/ui;
+      const regEmail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
       
       if (id === 'firstName' || id === 'lastName') {
         if (regName.test(value)) {
+          this.fillDataArray(id, value);
           this.view.showStatusInput(id, true);
         } else {
+          this.fillDataArray(id, '');
+          this.view.showStatusInput(id, false);
+        }  
+      }
+      if (id === 'email') {
+        if (regEmail.test(value)) {
+          this.fillDataArray(id, value);
+          this.view.showStatusInput(id, true);
+        } else {
+          this.fillDataArray(id, '');
           this.view.showStatusInput(id, false);
         }
       }
+      this.checkValueData()? this.getStatusDisabledButton(false) : this.getStatusDisabledButton(true);
+    }
+
+    checkValueData(): boolean {
+      let result = false;
+      
+      this.data.forEach((data) => {
+        if (data.firstName && data.lastName && data.email) {
+          result = !result;
+        }
+      });
+      
+      return result;
+    }
+
+    fillDataArray(id: string, value: string) {
+      this.data.forEach((data) => {
+        data[id] = value;
+      });
+    }
+
+    getStatusDisabledButton(status: boolean) {
+      this.view.showStylesdAddButton(status);
     }
 
     checkRegistrationData() {
-      if (true) {
+      if (this.checkValueData()) {
         this.closeModalWindow();
         this.view.showStartGameButton();
       }

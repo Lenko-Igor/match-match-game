@@ -48,7 +48,7 @@ export default class RegistrationForm extends BaseComponent{
         <div class="modal-avatar"></div>
       </main>
       <footer class="modal-footer">
-        <button id="add" class="add"><p>add user</p></button>
+        <button id="add" class="add disabled"><p>add user</p></button>
         <button id="cancel" class="cancel"><p>cancel</p></button>
       </footer>
     `
