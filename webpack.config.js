@@ -42,10 +42,13 @@ module.exports = {
       {
         test: /\.(ttf|woff|woff2|eot)$/,
         use: ['file-loader'],
-      }
+      },
     ]
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
+    alias: {
+      images: path.resolve(__dirname, 'src/'),
+    },
   },
 }

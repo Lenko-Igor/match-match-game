@@ -13,7 +13,7 @@ export default function mvc(app: HTMLElement) {
     readonly modalWindow: HTMLElement;
     readonly header: HTMLElement;
     readonly AboutPage: HTMLElement;
-    readonly GamePage: HTMLElement;
+    readonly Game: GamePage;
 
     constructor(app: HTMLElement) {
       this.app = app;
@@ -21,7 +21,7 @@ export default function mvc(app: HTMLElement) {
       this.modalWindow = new RegistrationForm().modalWindow;
       this.header = new Header().getHeader();
       this.AboutPage = new AboutPage().getPage();
-      this.GamePage = new GamePage().getPage();
+      this.Game = new GamePage();
       this.init();
     }
     
@@ -76,16 +76,49 @@ export default function mvc(app: HTMLElement) {
         buttonAdd.classList.add('active');
       }
     }
+
+    showGamePage(props: string[], difficulty: string) {
+      this.app.lastElementChild?.replaceWith(this.Game.getPage(props, difficulty));
+    }
+
+    showRotate(card: Element) {
+      this.Game.toRotateCard(card)
+    }
+
+    showResultSelect(arrSelect: Element[]) {
+      this.Game.getResultSelectCards(arrSelect);
+    }
+
+    rotateAllCards() {
+      const cards = this.app.querySelectorAll('.card-wrap');
+
+      cards.forEach((card) => {
+        this.Game.toRotateAllcards(card);
+      });
+    }
+
+    showTimer(minutes: number, seconds: number) {
+      const timer: any = this.app.querySelector('.timer-text');
+    
+      timer.innerHTML = `${minutes}:${seconds}`;
+    }
   }
   // Model
   class Model {
     private view: View;
     data: any[];   // переделать как-то на объект
+    private arrElementsPressed: Element[];
+    private props: any[];
+    private difficulty: string;
 
     constructor(view: View){
       this.view = view;
       this.data = [{firstName: '', lastName: '', email: ''}];  // переделать как-то на объект
+      this.arrElementsPressed = [];
+      this.props = [];
+      this.difficulty = 'easy';
       this.init();
+      this.getDataSettings()
     }
 
     init() {
@@ -157,6 +190,71 @@ export default function mvc(app: HTMLElement) {
         this.view.showStartGameButton();
       }
     }
+
+    getStartGame() {
+      let minutes: number = 0;
+      let seconds: number = 1;
+
+      this.view.showGamePage(this.props, this.difficulty);
+
+      let timer = setInterval(() => {
+        this.view.showTimer(minutes, seconds);
+        seconds++
+        if (seconds === 60) {
+          minutes++;
+          seconds = 0;
+        }
+
+        if (minutes === 2) {
+          clearInterval(timer)
+        }
+      }, 1000)
+      
+
+      setTimeout(() => {
+        this.view.rotateAllCards();        
+      }, 3000);
+    }
+
+    async getDataSettings() {
+      const rect = await fetch('../setting.json');
+      const data = await rect.json();
+      this.props = this.getPropsForGame(data, this.difficulty);
+    }
+
+    getPropsForGame(data: any, difficulty: string): string[] {
+      const value: number = data.difficulty[difficulty];
+      const images: [] = data.images.auto.slice(0, value);
+      const arr: any[] = images.map((elem) => images);
+      const result: string[] = arr.reduce((acc, val) => acc.concat(val), []).sort(() => Math.random() - 0.5);
+
+      return result;
+    }
+
+    toRotateCard(element: Element) {
+      this.view.showRotate(element);
+      this.toFillarrElementsPressed(element);
+    }
+
+    toFillarrElementsPressed(element: Element) {
+      if (this.arrElementsPressed.length <= 1) {
+        this.arrElementsPressed.push(element)
+        this.checkElementsPressed(this.arrElementsPressed)
+      }
+    }
+
+    checkElementsPressed(arr:any[]) {
+      if (arr.length === 2) {
+        if (arr[0].dataset.value !== arr[1].dataset.value) {
+          setTimeout(() => {
+            this.view.showResultSelect(arr);
+            this.arrElementsPressed = [];
+          }, 500)
+        } else {
+          this.arrElementsPressed = [];
+        }
+      }
+    }
   }
 
   // Controller
@@ -180,6 +278,11 @@ export default function mvc(app: HTMLElement) {
       // get event on modal window
       addBtn?.addEventListener('click', () => {
         this.clickAddBtnModal();
+        const startGame = this.app.querySelector('#startGame');
+
+        startGame?.addEventListener('click', () => {
+          this.clickStartGame();
+        })
       })
       
       cancelBtn?.addEventListener('click', () => {
@@ -197,6 +300,7 @@ export default function mvc(app: HTMLElement) {
         this.clickNewPlayerBtn();
       })
     }
+
     clickNewPlayerBtn() {
       this.model.openModalWindow();
     }
@@ -211,6 +315,17 @@ export default function mvc(app: HTMLElement) {
 
     getParametrsInput(id: string, value: string) {
       this.model.checkValueInput(id, value);
+    }
+
+    clickStartGame() {
+      this.model.getStartGame();
+      const card = document.querySelectorAll('.card-wrap')
+
+      card.forEach(card => { 
+        card.addEventListener('click', () =>{ 
+          this.model.toRotateCard(card);
+        })
+      })
     }
   }
 

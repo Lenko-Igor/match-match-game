@@ -1,4 +1,5 @@
 export default class BaseComponent {
+  
   constructor(){}
 
   createElement(teg: string, classStyle: string[], id: string): HTMLElement {
@@ -14,4 +15,5 @@ export default class BaseComponent {
     
     return element;
   }
+
 }
