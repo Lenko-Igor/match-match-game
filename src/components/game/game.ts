@@ -1,30 +1,21 @@
 import './game.css';
 import BaseComponent from '../../base-component';
+import Timer from './../timer/timer';
 
 
-
-
-
-export default class extends BaseComponent {
-  private props: string[]
+export default class GamePage extends BaseComponent {
+  private props: string[];
+  readonly timer: Timer;
 
   constructor() {
     super();
     this.props = [];
+    this.timer = new Timer();
   }
 
   getPage(props: string[], difficulty: string): HTMLElement {
     this.props = props;
     return this.createGame(difficulty);
-  }
-
-  createTimer(): HTMLElement {
-    const timer = document.createElement('div');
-    
-    timer.className = 'timer';
-    timer.innerHTML = `<p class="timer-text">00:00</p>`;
-    
-    return timer
   }
 
   createFeildGame(difficulty: string): HTMLElement {
@@ -67,7 +58,7 @@ export default class extends BaseComponent {
     const main = this.createElement('main', ['main'], '');
     const wrapContent = this.createElement('div', ['wrap-content'], '');
 
-    wrapContent.append(this.createTimer());
+    wrapContent.append(this.timer.createHTMLElementTimer());
     wrapContent.append(this.createFeildGame(difficulty));
     main.append(wrapContent);
     

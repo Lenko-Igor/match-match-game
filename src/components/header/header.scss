@@ -97,6 +97,14 @@
       position: absolute;
       top: 15px;
       right: 0;
+      .first-name {
+        position: absolute;
+        right: 140px;
+        top: 7px;
+        width: 200px;
+        text-align: end;
+        color: white;
+      }
       .header-button {
         position: absolute;
         top: 0;

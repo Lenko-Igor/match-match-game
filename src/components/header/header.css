@@ -145,6 +145,15 @@
   right: 0;
 }
 
+.header .header-container .header-button-feild .first-name {
+  position: absolute;
+  right: 140px;
+  top: 7px;
+  width: 200px;
+  text-align: end;
+  color: white;
+}
+
 .header .header-container .header-button-feild .header-button {
   position: absolute;
   top: 0;

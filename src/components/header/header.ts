@@ -2,18 +2,20 @@ import './header.css';
 import BaseComponent from '../../base-component';
 
 export default class Header extends BaseComponent {
-  readonly feild: HTMLElement
-  readonly container: HTMLElement
-  readonly logo: HTMLElement
-  readonly menu: HTMLElement
-  readonly button: HTMLElement
-  
+  readonly feild: HTMLElement;
+  readonly container: HTMLElement;
+  readonly logo: HTMLElement;
+  readonly menu: HTMLElement;
+  readonly button: HTMLElement;
+  public name: HTMLElement;
+
   constructor() {
     super()
     this.feild = this.createElement('header', ['header'], '');
     this.container = this.createContainer();
     this.logo = this.createLogo();
     this.menu = this.createMenu();
+    this.name = this.createElement('p', ['first-name', 'hidden'], 'firstName');
     this.button = this.createButton();
   }
 
@@ -74,6 +76,8 @@ export default class Header extends BaseComponent {
     buttonRegistration.innerHTML = `
       <p class="header-button__text">register new player</p>
     `;
+
+    buttonFeild.append(this.name);
     buttonFeild.append(buttonStartGame);
     buttonFeild.append(buttonRegistration);
     

@@ -11,7 +11,7 @@ export default function mvc(app: HTMLElement) {
     readonly app: HTMLElement;
     readonly modalFeild: HTMLElement;
     readonly modalWindow: HTMLElement;
-    readonly header: HTMLElement;
+    readonly header: Header;
     readonly AboutPage: HTMLElement;
     readonly Game: GamePage;
 
@@ -19,7 +19,7 @@ export default function mvc(app: HTMLElement) {
       this.app = app;
       this.modalFeild = new BaseComponent().createElement('div', ['modal-feild'], '');
       this.modalWindow = new RegistrationForm().modalWindow;
-      this.header = new Header().getHeader();
+      this.header = new Header();
       this.AboutPage = new AboutPage().getPage();
       this.Game = new GamePage();
       this.init();
@@ -31,9 +31,8 @@ export default function mvc(app: HTMLElement) {
     }
 
     showFirstPage() {
-      this.app.append(this.header);
+      this.app.append(this.header.getHeader());
       this.app.append(this.AboutPage);
-      //this.app.append(this.GamePage);   // для наглядности пока вставил 
     }
 
     showModalWindow() {
@@ -43,7 +42,13 @@ export default function mvc(app: HTMLElement) {
 
     hiddenModalWindow() {
       const modal = document.querySelector('.modal-fon');
+      const inputs = modal?.querySelectorAll('input');
+      
       modal?.classList.remove('modal-fon_active');
+      inputs?.forEach(inp => {
+        inp.value = '';
+        inp.nextElementSibling?.classList.add('error');
+      });
     }
 
     showStartGameButton() {
@@ -52,6 +57,20 @@ export default function mvc(app: HTMLElement) {
 
       regBtn?.classList.add('hidden');
       startBtn?.classList.remove('hidden');
+    }
+
+    showStartStopGameButton(id: string, nameBtn: string) {
+      const startGame = this.app.querySelector('.header-button-start');
+      if (startGame) {
+        startGame.id = id;
+        const text = startGame.firstElementChild;
+        if (text) text.innerHTML = nameBtn;
+      }
+    }
+
+    showAvatarName(name: string) {
+      this.header.name.innerHTML = name;
+      this.header.name.classList.toggle('hidden');
     }
 
     showStatusInput(id: string, status: boolean) {
@@ -97,11 +116,14 @@ export default function mvc(app: HTMLElement) {
       });
     }
 
-    showTimer(minutes: number, seconds: number) {
-      const timer: any = this.app.querySelector('.timer-text');
-    
-      timer.innerHTML = `${minutes}:${seconds}`;
+    showStartTimer() {
+      this.Game.timer.startTimer();
     }
+    
+    showStopTimer() {
+      this.Game.timer.stopTimer();
+    }
+
   }
   // Model
   class Model {
@@ -188,32 +210,23 @@ export default function mvc(app: HTMLElement) {
       if (this.checkValueData()) {
         this.closeModalWindow();
         this.view.showStartGameButton();
+        this.view.showAvatarName(this.data[0].firstName);
       }
     }
 
     getStartGame() {
-      let minutes: number = 0;
-      let seconds: number = 1;
-
       this.view.showGamePage(this.props, this.difficulty);
-
-      let timer = setInterval(() => {
-        this.view.showTimer(minutes, seconds);
-        seconds++
-        if (seconds === 60) {
-          minutes++;
-          seconds = 0;
-        }
-
-        if (minutes === 2) {
-          clearInterval(timer)
-        }
-      }, 1000)
-      
+      this.view.showStartTimer();
+      this.view.showStartStopGameButton('stopGame', 'stop game');
 
       setTimeout(() => {
         this.view.rotateAllCards();        
       }, 3000);
+    }
+
+    getStopGame() {
+      this.view.showStartStopGameButton('startGame', 'start game');
+      this.view.showStopTimer();
     }
 
     async getDataSettings() {
@@ -255,6 +268,7 @@ export default function mvc(app: HTMLElement) {
         }
       }
     }
+
   }
 
   // Controller
@@ -278,10 +292,17 @@ export default function mvc(app: HTMLElement) {
       // get event on modal window
       addBtn?.addEventListener('click', () => {
         this.clickAddBtnModal();
-        const startGame = this.app.querySelector('#startGame');
+        const startGame = this.app.querySelector('.header-button-start');
 
         startGame?.addEventListener('click', () => {
-          this.clickStartGame();
+          if (startGame.id === 'startGame') {
+            this.clickStartGame();
+            return;
+          }
+          if (startGame.id === 'stopGame') {
+            this.clickStopGame();
+            return;
+          }
         })
       })
       
@@ -326,6 +347,10 @@ export default function mvc(app: HTMLElement) {
           this.model.toRotateCard(card);
         })
       })
+    }
+
+    clickStopGame() {
+      this.model.getStopGame();
     }
   }
 
