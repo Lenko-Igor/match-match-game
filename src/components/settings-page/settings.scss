@@ -1,0 +1,44 @@
+.setting-content {
+  width: 1000px;
+  height: 802px;
+  padding: 28px 36px 85px;
+  margin: 0 auto;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 5px;
+  .setting-title {
+    text-align: center;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    letter-spacing: 0.15px;
+    color: rgba(0, 0, 0, 0.87);
+  }
+  .setting-feild {
+    width: 700px;
+    height: 70px;
+    margin: 25px auto 0;
+    background-color: #ffffff;
+    box-shadow: 5px 5px 15px 5px rgba(68,68,68,0.39);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .setting-select__title {
+      margin-right: 15px;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 30px;
+      letter-spacing: 0.15px;
+      color: rgba(0, 0, 0, 0.87);
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+    .setting-select {
+      margin-right: 25px;
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+    }
+  }
+}

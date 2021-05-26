@@ -1,6 +1,8 @@
 import BaseComponent from './base-component'; 
 import Header from './components/header/header';
 import AboutPage from './components/about/about';
+import ScorePage from './components/score/score';
+import SettingsPage from './components/settings-page/settings'
 import RegistrationForm from './components/registration/registration-form';
 import GamePage from './components/game/game';
 
@@ -13,6 +15,8 @@ export default function mvc(app: HTMLElement) {
     readonly modalWindow: HTMLElement;
     readonly header: Header;
     readonly AboutPage: HTMLElement;
+    readonly ScorePage: HTMLElement;
+    readonly SettingsPage: HTMLElement;
     readonly Game: GamePage;
 
     constructor(app: HTMLElement) {
@@ -21,6 +25,8 @@ export default function mvc(app: HTMLElement) {
       this.modalWindow = new RegistrationForm().modalWindow;
       this.header = new Header();
       this.AboutPage = new AboutPage().getPage();
+      this.ScorePage = new ScorePage().getPage();
+      this.SettingsPage = new SettingsPage().getPage();
       this.Game = new GamePage();
       this.init();
     }
@@ -33,6 +39,22 @@ export default function mvc(app: HTMLElement) {
     showFirstPage() {
       this.app.append(this.header.getHeader());
       this.app.append(this.AboutPage);
+    }
+
+    openSelectedPage(item: Element) {
+      const items = this.header.menu.querySelectorAll('.header-menu__item');
+      items.forEach(elem => elem.classList.remove('item-select'));
+      item.classList.add('item-select');
+
+      if (item.classList.contains('item-about')) {
+        this.showPage(this.AboutPage);
+      }
+      if (item.classList.contains('item-score')) {
+        this.showPage(this.ScorePage);
+      }
+      if (item.classList.contains('item-setting')) {
+        this.showPage(this.SettingsPage);
+      }
     }
 
     showModalWindow() {
@@ -100,6 +122,10 @@ export default function mvc(app: HTMLElement) {
       this.app.lastElementChild?.replaceWith(this.Game.getPage(props, difficulty));
     }
 
+    showPage(content: HTMLElement) {
+      this.app.lastElementChild?.replaceWith(content);
+    }
+
     showRotate(card: Element) {
       this.Game.toRotateCard(card)
     }
@@ -149,6 +175,11 @@ export default function mvc(app: HTMLElement) {
 
     getLoadFirstPage() {
       this.view.showFirstPage();
+    }
+
+    selectMenu(item: Element) {
+      this.getStopGame();
+      this.view.openSelectedPage(item);
     }
 
     closeModalWindow() {
@@ -288,6 +319,7 @@ export default function mvc(app: HTMLElement) {
       const cancelBtn = document.querySelector('#cancel');
       const regBtn = this.app.querySelector('#regBtn');
       const inputs = modalWindow?.querySelectorAll('input');
+      const menuButtons = this.app.querySelectorAll('.header-menu__item');
 
       // get event on modal window
       addBtn?.addEventListener('click', () => {
@@ -317,10 +349,20 @@ export default function mvc(app: HTMLElement) {
       })
       
       // get event on aap 
+      menuButtons.forEach(menu => {
+        menu.addEventListener('click', () => {
+          this.clickMenuButton(menu);
+        })
+      })
+
       regBtn?.addEventListener('click', () => {
         this.clickNewPlayerBtn();
       })
     }
+
+    clickMenuButton(item: Element) {
+      this.model.selectMenu(item);
+    };
 
     clickNewPlayerBtn() {
       this.model.openModalWindow();
@@ -352,6 +394,8 @@ export default function mvc(app: HTMLElement) {
     clickStopGame() {
       this.model.getStopGame();
     }
+
+
   }
 
   const view = new View(app);

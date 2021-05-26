@@ -33,6 +33,8 @@ export default class Timer {
   }
 
   startTimer() {
+    this.valueTimer = 0;
+    this.showTimerValue(this.minutes, this.seconds);
     this.startTimerInterval = setInterval(() => {
       this.valueTimer++;
       this.minutes = Math.floor(this.valueTimer / 60);
