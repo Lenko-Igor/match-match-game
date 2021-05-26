@@ -35,7 +35,20 @@
           align-items: center;
 }
 
-.setting-content .setting-feild .setting-select__title {
+.setting-content .setting-feild .setting-select__wrap {
+  width: 200px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.setting-content .setting-feild .setting-select__wrap .setting-select__title {
   margin-right: 15px;
   font-style: normal;
   font-weight: 500;
@@ -47,7 +60,7 @@
   text-transform: uppercase;
 }
 
-.setting-content .setting-feild .setting-select {
+.setting-content .setting-feild .setting-select__wrap .setting-select {
   margin-right: 25px;
   cursor: pointer;
   width: 18px;

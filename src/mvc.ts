@@ -5,6 +5,7 @@ import ScorePage from './components/score/score';
 import SettingsPage from './components/settings-page/settings'
 import RegistrationForm from './components/registration/registration-form';
 import GamePage from './components/game/game';
+import { SettingData, RegistrationData } from './components/interface-modules/Interfaces'
 
 
 export default function mvc(app: HTMLElement) {
@@ -16,7 +17,7 @@ export default function mvc(app: HTMLElement) {
     readonly header: Header;
     readonly AboutPage: HTMLElement;
     readonly ScorePage: HTMLElement;
-    readonly SettingsPage: HTMLElement;
+    readonly Settings: SettingsPage;
     readonly Game: GamePage;
 
     constructor(app: HTMLElement) {
@@ -26,7 +27,7 @@ export default function mvc(app: HTMLElement) {
       this.header = new Header();
       this.AboutPage = new AboutPage().getPage();
       this.ScorePage = new ScorePage().getPage();
-      this.SettingsPage = new SettingsPage().getPage();
+      this.Settings = new SettingsPage();
       this.Game = new GamePage();
       this.init();
     }
@@ -53,7 +54,7 @@ export default function mvc(app: HTMLElement) {
         this.showPage(this.ScorePage);
       }
       if (item.classList.contains('item-setting')) {
-        this.showPage(this.SettingsPage);
+        this.showPage(this.Settings.getPage());
       }
     }
 
@@ -154,17 +155,19 @@ export default function mvc(app: HTMLElement) {
   // Model
   class Model {
     private view: View;
-    data: any[];   // переделать как-то на объект
+    private regData: RegistrationData;
     private arrElementsPressed: Element[];
-    private props: any[];
+    private imagesForGame: string[];
     private difficulty: string;
+    private settingData: SettingData
 
     constructor(view: View){
       this.view = view;
-      this.data = [{firstName: '', lastName: '', email: ''}];  // переделать как-то на объект
+      this.regData = {firstName: '', lastName: '', email: ''};
       this.arrElementsPressed = [];
-      this.props = [];
-      this.difficulty = 'easy';
+      this.imagesForGame = [];
+      this.settingData = {};
+      this.difficulty = this.view.Settings.getValueDifficulty();
       this.init();
       this.getDataSettings()
     }
@@ -196,19 +199,19 @@ export default function mvc(app: HTMLElement) {
       
       if (id === 'firstName' || id === 'lastName') {
         if (regName.test(value)) {
-          this.fillDataArray(id, value);
+          this.regData[id] = value;
           this.view.showStatusInput(id, true);
         } else {
-          this.fillDataArray(id, '');
+          this.regData[id] = '';
           this.view.showStatusInput(id, false);
         }  
       }
       if (id === 'email') {
         if (regEmail.test(value)) {
-          this.fillDataArray(id, value);
+          this.regData[id] = value;
           this.view.showStatusInput(id, true);
         } else {
-          this.fillDataArray(id, '');
+          this.regData[id] = '';
           this.view.showStatusInput(id, false);
         }
       }
@@ -218,19 +221,11 @@ export default function mvc(app: HTMLElement) {
     checkValueData(): boolean {
       let result = false;
       
-      this.data.forEach((data) => {
-        if (data.firstName && data.lastName && data.email) {
+      if (this.regData.firstName && this.regData.lastName && this.regData.email) {
           result = !result;
-        }
-      });
-      
-      return result;
-    }
+      }
 
-    fillDataArray(id: string, value: string) {
-      this.data.forEach((data) => {
-        data[id] = value;
-      });
+      return result;
     }
 
     getStatusDisabledButton(status: boolean) {
@@ -241,12 +236,13 @@ export default function mvc(app: HTMLElement) {
       if (this.checkValueData()) {
         this.closeModalWindow();
         this.view.showStartGameButton();
-        this.view.showAvatarName(this.data[0].firstName);
+        this.view.showAvatarName(this.regData.firstName);
       }
     }
 
     getStartGame() {
-      this.view.showGamePage(this.props, this.difficulty);
+      this.imagesForGame = this.getPropsForGame(this.settingData, this.view.Settings.getValueDifficulty());
+      this.view.showGamePage(this.imagesForGame, this.view.Settings.getValueDifficulty());
       this.view.showStartTimer();
       this.view.showStartStopGameButton('stopGame', 'stop game');
 
@@ -256,6 +252,7 @@ export default function mvc(app: HTMLElement) {
     }
 
     getStopGame() {
+      this.arrElementsPressed = [];
       this.view.showStartStopGameButton('startGame', 'start game');
       this.view.showStopTimer();
     }
@@ -263,7 +260,7 @@ export default function mvc(app: HTMLElement) {
     async getDataSettings() {
       const rect = await fetch('../setting.json');
       const data = await rect.json();
-      this.props = this.getPropsForGame(data, this.difficulty);
+      this.settingData = data
     }
 
     getPropsForGame(data: any, difficulty: string): string[] {
@@ -321,6 +318,7 @@ export default function mvc(app: HTMLElement) {
       const inputs = modalWindow?.querySelectorAll('input');
       const menuButtons = this.app.querySelectorAll('.header-menu__item');
 
+   
       // get event on modal window
       addBtn?.addEventListener('click', () => {
         this.clickAddBtnModal();
@@ -394,8 +392,6 @@ export default function mvc(app: HTMLElement) {
     clickStopGame() {
       this.model.getStopGame();
     }
-
-
   }
 
   const view = new View(app);
