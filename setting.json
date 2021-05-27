@@ -1,6 +1,7 @@
 {
   "images": {
-    "auto": ["audi.jpg", "volvo.jpg", "mercedes.jpg", "honda.jpg", "bmw.jpg", "reno.jpg", "cadilac.jpg", "tesla.jpg"]
+    "auto": ["audi.jpg", "volvo.jpg", "mercedes.jpg", "honda.jpg", "bmw.jpg", "reno.jpg", "cadilac.jpg", "tesla.jpg"],
+    "animal": ["bear.jpg", "cat.jpg", "dog.jpg", "horse.jpg", "lemur.jpg", "monkey.jpg", "raccoon.jpg", "tiger.jpg"]
   },
   "difficulty": {
     "easy": 4,

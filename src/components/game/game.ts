@@ -5,7 +5,7 @@ import Timer from './../timer/timer';
 
 export default class GamePage extends BaseComponent {
   private props: string[];
-  readonly timer: Timer;
+  public timer: Timer;
 
   constructor() {
     super();
@@ -19,22 +19,19 @@ export default class GamePage extends BaseComponent {
   }
 
   createFeildGame(difficulty: string): HTMLElement {
-    const feild = document.createElement('div');
-    
-    feild.className = 'cards-feild';
+    const feild = this.createElement('div', ['cards-feild'], '')
     feild.append(this.createCards(difficulty)); 
     
     return feild
   }
 
   createCards(difficulty: string): HTMLElement {
-    const cardsContainer = document.createElement('div');
+    const cardsContainer = this.createElement('div', ['card-container', difficulty], '')
     const props = this.props;
     const content: string = props.map((prop) => {
       return this.createCard(prop);
     }).join('');
 
-    cardsContainer.className = `card-container ${difficulty}`;
     cardsContainer.innerHTML = content;
 
     return cardsContainer;

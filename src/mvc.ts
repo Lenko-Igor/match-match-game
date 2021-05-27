@@ -5,7 +5,7 @@ import ScorePage from './components/score/score';
 import SettingsPage from './components/settings-page/settings'
 import RegistrationForm from './components/registration/registration-form';
 import GamePage from './components/game/game';
-import { SettingData, RegistrationData } from './components/interface-modules/Interfaces'
+import { SettingData, RegistrationData, ItemsForScore } from './components/interface-modules/Interfaces'
 
 
 export default function mvc(app: HTMLElement) {
@@ -13,6 +13,7 @@ export default function mvc(app: HTMLElement) {
   class View {
     readonly app: HTMLElement;
     readonly modalFeild: HTMLElement;
+    readonly ModalWindow: RegistrationForm;
     readonly modalWindow: HTMLElement;
     readonly header: Header;
     readonly AboutPage: HTMLElement;
@@ -23,7 +24,8 @@ export default function mvc(app: HTMLElement) {
     constructor(app: HTMLElement) {
       this.app = app;
       this.modalFeild = new BaseComponent().createElement('div', ['modal-feild'], '');
-      this.modalWindow = new RegistrationForm().modalWindow;
+      this.ModalWindow = new RegistrationForm();
+      this.modalWindow = this.ModalWindow.modalWindow;
       this.header = new Header();
       this.AboutPage = new AboutPage().getPage();
       this.ScorePage = new ScorePage().getPage();
@@ -58,20 +60,26 @@ export default function mvc(app: HTMLElement) {
       }
     }
 
-    showModalWindow() {
-      const modal = document.querySelector('.modal-fon');
-      modal?.classList.add('modal-fon_active')      
+    showModalWindow(win?: string, score?: number) {
+      (win && score)
+        ? this.ModalWindow.openModalWin(score) 
+        : this.ModalWindow.openModalRegistration();
     }
 
-    hiddenModalWindow() {
-      const modal = document.querySelector('.modal-fon');
-      const inputs = modal?.querySelectorAll('input');
-      
-      modal?.classList.remove('modal-fon_active');
-      inputs?.forEach(inp => {
-        inp.value = '';
-        inp.nextElementSibling?.classList.add('error');
-      });
+    hiddenModalWindow(win?: string) {
+      if (win) {
+        this.ModalWindow.closeModalWin();
+      } else {
+        const modal = document.querySelector('.modal-fon');
+        const inputs = modal?.querySelectorAll('input');
+        
+        this.ModalWindow.closeModalRegistration(); 
+        
+        inputs?.forEach(inp => {
+          inp.value = '';
+          inp.nextElementSibling?.classList.add('error');
+        });
+      }
     }
 
     showStartGameButton() {
@@ -159,7 +167,9 @@ export default function mvc(app: HTMLElement) {
     private arrElementsPressed: Element[];
     private imagesForGame: string[];
     private difficulty: string;
-    private settingData: SettingData
+    private settingData: SettingData;
+    private itemsForScore: ItemsForScore;
+    private score: number;
 
     constructor(view: View){
       this.view = view;
@@ -168,6 +178,14 @@ export default function mvc(app: HTMLElement) {
       this.imagesForGame = [];
       this.settingData = {};
       this.difficulty = this.view.Settings.getValueDifficulty();
+      this.itemsForScore = {
+        amountAllCards: 0,
+        amountOpenedCards: 0,
+        amountAllCompareCards: 0,
+        amountFatalCompareCards: 0,
+        timer: 0
+      }
+      this.score = 0;
       this.init();
       this.getDataSettings()
     }
@@ -185,8 +203,18 @@ export default function mvc(app: HTMLElement) {
       this.view.openSelectedPage(item);
     }
 
-    closeModalWindow() {
+    closeModalWindow(deleteData?: string) {
+      if (deleteData) {
+        this.regData.firstName = ''; 
+        this.regData.lastName = '';
+        this.regData.email = '';
+        this.getStatusDisabledButton(true);
+      };
       this.view.hiddenModalWindow();
+    }
+
+    closeModalWin() {
+      this.view.hiddenModalWindow('win');
     }
 
     openModalWindow() {
@@ -220,6 +248,7 @@ export default function mvc(app: HTMLElement) {
 
     checkValueData(): boolean {
       let result = false;
+      console.log(this.regData);
       
       if (this.regData.firstName && this.regData.lastName && this.regData.email) {
           result = !result;
@@ -241,31 +270,45 @@ export default function mvc(app: HTMLElement) {
     }
 
     getStartGame() {
-      this.imagesForGame = this.getPropsForGame(this.settingData, this.view.Settings.getValueDifficulty());
+      this.imagesForGame = this.getPropsForGame(this.settingData, this.view.Settings.getValueDifficulty(), this.view.Settings.getTypeCards());
       this.view.showGamePage(this.imagesForGame, this.view.Settings.getValueDifficulty());
       this.view.showStartTimer();
       this.view.showStartStopGameButton('stopGame', 'stop game');
+
+      this.itemsForScore.amountAllCards = this.imagesForGame.length,
+      this.itemsForScore.amountOpenedCards = 0;
+      this.itemsForScore.amountAllCompareCards = 0;
+      this.itemsForScore.amountFatalCompareCards = 0;
+      this.itemsForScore.timer = 0;
 
       setTimeout(() => {
         this.view.rotateAllCards();        
       }, 3000);
     }
 
-    getStopGame() {
+    getStopGame(win?: string) {
       this.arrElementsPressed = [];
       this.view.showStartStopGameButton('startGame', 'start game');
       this.view.showStopTimer();
+      this.itemsForScore.timer = this.view.Game.timer.valueTimer;
+      if (win) {
+        this.score = (
+          (this.itemsForScore.amountAllCompareCards - this.itemsForScore.amountFatalCompareCards) * 100
+          ) - this.itemsForScore.timer * 10;
+        
+        this.view.showModalWindow('win', this.score);
+      }
     }
 
     async getDataSettings() {
       const rect = await fetch('../setting.json');
       const data = await rect.json();
-      this.settingData = data
+      this.settingData = data;
     }
 
-    getPropsForGame(data: any, difficulty: string): string[] {
+    getPropsForGame(data: any, difficulty: string, type: string): string[] {
       const value: number = data.difficulty[difficulty];
-      const images: [] = data.images.auto.slice(0, value);
+      const images: [] = data.images[type].slice(0, value);
       const arr: any[] = images.map((elem) => images);
       const result: string[] = arr.reduce((acc, val) => acc.concat(val), []).sort(() => Math.random() - 0.5);
 
@@ -286,17 +329,22 @@ export default function mvc(app: HTMLElement) {
 
     checkElementsPressed(arr:any[]) {
       if (arr.length === 2) {
+        this.itemsForScore.amountAllCompareCards ++;
         if (arr[0].dataset.value !== arr[1].dataset.value) {
+          this.itemsForScore.amountFatalCompareCards ++;
           setTimeout(() => {
             this.view.showResultSelect(arr);
             this.arrElementsPressed = [];
           }, 500)
         } else {
+          this.itemsForScore.amountOpenedCards += 2;
           this.arrElementsPressed = [];
+          if (this.itemsForScore.amountOpenedCards === this.itemsForScore.amountAllCards) {
+            this.getStopGame('win');
+          }
         }
       }
     }
-
   }
 
   // Controller
@@ -313,10 +361,12 @@ export default function mvc(app: HTMLElement) {
     init() {
       const modalWindow = document.querySelector('.modal-feild');
       const addBtn = document.querySelector('#add');
+      const winBtn = document.querySelector('#win');
       const cancelBtn = document.querySelector('#cancel');
       const regBtn = this.app.querySelector('#regBtn');
       const inputs = modalWindow?.querySelectorAll('input');
       const menuButtons = this.app.querySelectorAll('.header-menu__item');
+
 
    
       // get event on modal window
@@ -338,6 +388,10 @@ export default function mvc(app: HTMLElement) {
       
       cancelBtn?.addEventListener('click', () => {
         this.clickCancelBtnModal();
+      })
+
+      winBtn?.addEventListener('click', () => {
+        this.clickWinBtnModal();
       })
 
       inputs?.forEach((inp) => {
@@ -367,11 +421,15 @@ export default function mvc(app: HTMLElement) {
     }
 
     clickCancelBtnModal() {
-      this.model.closeModalWindow();
+      this.model.closeModalWindow('deleteData');
     }
 
     clickAddBtnModal() {
       this.model.checkRegistrationData();
+    }
+
+    clickWinBtnModal() {
+      this.model.closeModalWin();
     }
 
     getParametrsInput(id: string, value: string) {
@@ -384,7 +442,9 @@ export default function mvc(app: HTMLElement) {
 
       card.forEach(card => { 
         card.addEventListener('click', () =>{ 
-          this.model.toRotateCard(card);
+          if (card.classList.contains('rotate')) {
+            this.model.toRotateCard(card);
+          }
         })
       })
     }

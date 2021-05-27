@@ -1,5 +1,5 @@
 export interface SettingData {
-  image?: {
+  images?: {
     auto: string[]
   },
   difficulty?: {
@@ -13,4 +13,12 @@ export interface RegistrationData {
   firstName: string, 
   lastName: string, 
   email: string,
+}
+
+export interface ItemsForScore {
+  amountAllCards: number,
+  amountOpenedCards: number,
+  amountAllCompareCards: number,
+  amountFatalCompareCards: number,
+  timer: number
 }

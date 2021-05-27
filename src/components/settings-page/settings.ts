@@ -3,10 +3,12 @@ import BaseComponent from '../../base-component';
 
 export default class SettingsPage extends BaseComponent{
   public difficulty: string;
+  public typeCards: string;
 
   constructor() {
     super();
     this.difficulty = 'easy';
+    this.typeCards = 'auto';
   }
 
   getPage(): HTMLElement {
@@ -14,25 +16,38 @@ export default class SettingsPage extends BaseComponent{
   }
 
   createMain(): HTMLElement {
-    const props: string[] = ['easy', 'middle', 'difficult'];
-    const main = this.createElement('main', ['main'], '');
-    const container = this.createElement('div', ['container', 'main-container'], '');
-    const wrapContent = this.createElement('div', ['setting-content'], '');
-    const title = this.createElement('h2', ['setting-title'], '');
-    const form = this.createElement('form', ['setting-feild'], '');
+    const propsDifficulty: string[] = ['easy', 'middle', 'difficult'];
+    const propsTypeCards: string[] = ['auto', 'animal'];
 
-    title.innerHTML = 'Difficulty';
-    wrapContent.append(title);
-    props.forEach(prop => {
-      form.append(this.createInputBlock(prop));
+    const main: HTMLElement = this.createElement('main', ['main'], '');
+    const container: HTMLElement = this.createElement('div', ['container', 'main-container'], '');
+    const wrapContent: HTMLElement = this.createElement('div', ['setting-content'], '');
+    const titleDifficulty: HTMLElement = this.createElement('h2', ['setting-title'], '');
+    const formDifficulty: HTMLElement = this.createElement('form', ['setting-feild'], '');
+    const titleTypeCards: HTMLElement = this.createElement('h2', ['setting-title'], '');
+    const formTypeCards: HTMLElement = this.createElement('form', ['setting-feild'], '');
+
+    titleDifficulty.innerHTML = 'Difficulty';
+    titleTypeCards.innerHTML = 'Game cards';
+    propsDifficulty.forEach(prop => {
+      formDifficulty.append(this.creteDifficultyBlock(prop));
     });
-    wrapContent.append(form);
+    propsTypeCards.forEach(prop => {
+      formTypeCards.append(this.createTypeCardsBlock(prop));
+    });
+
+
+    wrapContent.append(titleDifficulty);
+    wrapContent.append(formDifficulty);
+    wrapContent.append(titleTypeCards);
+    wrapContent.append(formTypeCards);
+
     container.append(wrapContent);
     main.append(container);
     return main;
   }
 
-  createInputBlock(text: string): HTMLElement {
+  creteDifficultyBlock(text: string): HTMLElement {
     const wrap = this.createElement('div', ['setting-select__wrap'], '');
     const label = this.createElement('label', ['setting-select__title'], '');
     const input = this.createElement('input', ['setting-select'], text);
@@ -56,7 +71,35 @@ export default class SettingsPage extends BaseComponent{
     return wrap;
   }
 
+  createTypeCardsBlock(text: string): HTMLElement {
+    const wrap = this.createElement('div', ['setting-select__wrap'], '');
+    const label = this.createElement('label', ['setting-select__title'], '');
+    const input = this.createElement('input', ['setting-select'], text);
+
+    label.setAttribute('for', text);
+    label.innerHTML = text;
+    input.setAttribute('name', 'images');
+    input.setAttribute('type', 'radio');
+    input.id = text;
+    input.addEventListener('change', () => {
+      this.typeCards = input.id
+    });
+
+    if (text === this.typeCards) {
+      input.setAttribute('checked', 'checked');
+    }
+
+    wrap.append(label);
+    wrap.append(input);
+
+    return wrap;
+  }
+
   getValueDifficulty(): string {
-    return this.difficulty
+    return this.difficulty;
+  }
+
+  getTypeCards(): string {
+    return this.typeCards;
   }
 }
