@@ -350,7 +350,7 @@ export default function mvc(app: HTMLElement) {
       }
     }
 
-    checkElementsPressed(arr:any[]) {
+    checkElementsPressed(arr: any[]) {
       if (arr.length === 2) {
         this.itemsForScore.amountAllCompareCards ++;
         if (arr[0].dataset.value !== arr[1].dataset.value) {
@@ -459,9 +459,9 @@ export default function mvc(app: HTMLElement) {
 
     clickStartGame() {
       this.model.getStartGame();
-      const card = document.querySelectorAll('.card-wrap')
+      const card = document.querySelectorAll('.card-wrap');
 
-      card.forEach(card => { 
+      card.forEach((card) => { 
         card.addEventListener('click', () =>{ 
           if (card.classList.contains('rotate')) {
             this.model.toRotateCard(card);

@@ -13,6 +13,7 @@
 
 #wrap-score .score-list {
   width: 100%;
+  padding-top: 30px;
 }
 
 #wrap-score .score-list .item {

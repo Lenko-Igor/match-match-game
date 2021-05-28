@@ -31,20 +31,26 @@ export default class ScorePage extends BaseComponent{
  
   createListScore(dataAllPersons: PersonalData[]): HTMLElement {
     const ul: HTMLElement = this.createElement('ul', ['score-list'], '');
-    let list: string = '';
+    
+    const sorted: PersonalData[]  = dataAllPersons.slice(0).sort((a: PersonalData,b: PersonalData): number => {
+      let result: number = 0;
+      if (a.score && b.score) {
+        result = a.score - b.score
+      }
+      return result
+    }).reverse();
 
-    dataAllPersons.forEach(elem => {
-      const content: string = `
-      <li class="item">
-        <div class="item__person">
-          <p class="item__person-name">${elem.firstName} ${elem.lastName}</p>
-          <p class="item__person-email">${elem.email}</p>
-        </div>
-        <p class="item__score">Score: <span>${elem.score}</span></p>
-      </li>
-    `
-      list += content;
-    });
+    const list: string = sorted.splice(0, 10).map((person) => {
+      return `
+        <li class="item">
+          <div class="item__person">
+            <p class="item__person-name">${person.firstName} ${person.lastName}</p>
+            <p class="item__person-email">${person.email}</p>
+          </div>
+          <p class="item__score">Score: <span>${person.score}</span></p>
+        </li>
+      `
+    }).join('')
      
     ul.innerHTML = list;
 
