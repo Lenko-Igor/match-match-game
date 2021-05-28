@@ -5,7 +5,8 @@ import ScorePage from './components/score/score';
 import SettingsPage from './components/settings-page/settings'
 import RegistrationForm from './components/registration/registration-form';
 import GamePage from './components/game/game';
-import { SettingData, RegistrationData, ItemsForScore } from './components/interface-modules/Interfaces'
+import { SettingData, RegistrationData, ItemsForScore, PersonalData } from './components/interface-modules/Interfaces';
+import DataBase from './components/data-base/data-base';
 
 
 export default function mvc(app: HTMLElement) {
@@ -17,7 +18,7 @@ export default function mvc(app: HTMLElement) {
     readonly modalWindow: HTMLElement;
     readonly header: Header;
     readonly AboutPage: HTMLElement;
-    readonly ScorePage: HTMLElement;
+    readonly ScorePage: ScorePage;
     readonly Settings: SettingsPage;
     readonly Game: GamePage;
 
@@ -28,7 +29,7 @@ export default function mvc(app: HTMLElement) {
       this.modalWindow = this.ModalWindow.modalWindow;
       this.header = new Header();
       this.AboutPage = new AboutPage().getPage();
-      this.ScorePage = new ScorePage().getPage();
+      this.ScorePage = new ScorePage();
       this.Settings = new SettingsPage();
       this.Game = new GamePage();
       this.init();
@@ -44,7 +45,7 @@ export default function mvc(app: HTMLElement) {
       this.app.append(this.AboutPage);
     }
 
-    openSelectedPage(item: Element) {
+    openSelectedPage(item: Element, dataAllPersons?: PersonalData[]) {
       const items = this.header.menu.querySelectorAll('.header-menu__item');
       items.forEach(elem => elem.classList.remove('item-select'));
       item.classList.add('item-select');
@@ -53,11 +54,15 @@ export default function mvc(app: HTMLElement) {
         this.showPage(this.AboutPage);
       }
       if (item.classList.contains('item-score')) {
-        this.showPage(this.ScorePage);
+        if (dataAllPersons) this.showPage(this.ScorePage.getPage(dataAllPersons));
       }
       if (item.classList.contains('item-setting')) {
         this.showPage(this.Settings.getPage());
       }
+    }
+
+    openScorePage(dataAllPersons?: PersonalData[]) {
+      if (dataAllPersons) this.showPage(this.ScorePage.getPage(dataAllPersons));
     }
 
     showModalWindow(win?: string, score?: number) {
@@ -171,6 +176,8 @@ export default function mvc(app: HTMLElement) {
     private itemsForScore: ItemsForScore;
     private score: number;
 
+    private dataBase: DataBase;
+
     constructor(view: View){
       this.view = view;
       this.regData = {firstName: '', lastName: '', email: ''};
@@ -186,12 +193,13 @@ export default function mvc(app: HTMLElement) {
         timer: 0
       }
       this.score = 0;
+      this.dataBase = new DataBase(); 
       this.init();
-      this.getDataSettings()
+      this.getDataSettings();
     }
 
     init() {
-      this.getLoadFirstPage()
+      this.getLoadFirstPage();
     }
 
     getLoadFirstPage() {
@@ -200,7 +208,11 @@ export default function mvc(app: HTMLElement) {
 
     selectMenu(item: Element) {
       this.getStopGame();
-      this.view.openSelectedPage(item);
+      if (item.classList.contains('item-score')) {
+        this.view.openSelectedPage(item, this.dataBase.dataAllPersons);         
+       } else {
+        this.view.openSelectedPage(item);
+      }
     }
 
     closeModalWindow(deleteData?: string) {
@@ -215,6 +227,7 @@ export default function mvc(app: HTMLElement) {
 
     closeModalWin() {
       this.view.hiddenModalWindow('win');
+      this.view.openScorePage(this.dataBase.dataAllPersons);        
     }
 
     openModalWindow() {
@@ -248,8 +261,7 @@ export default function mvc(app: HTMLElement) {
 
     checkValueData(): boolean {
       let result = false;
-      console.log(this.regData);
-      
+
       if (this.regData.firstName && this.regData.lastName && this.regData.email) {
           result = !result;
       }
@@ -281,7 +293,7 @@ export default function mvc(app: HTMLElement) {
       this.itemsForScore.amountFatalCompareCards = 0;
       this.itemsForScore.timer = 0;
 
-      setTimeout(() => {
+      setTimeout(() => {  //    исправить на 30 секунд
         this.view.rotateAllCards();        
       }, 3000);
     }
@@ -291,11 +303,22 @@ export default function mvc(app: HTMLElement) {
       this.view.showStartStopGameButton('startGame', 'start game');
       this.view.showStopTimer();
       this.itemsForScore.timer = this.view.Game.timer.valueTimer;
+      
       if (win) {
         this.score = (
           (this.itemsForScore.amountAllCompareCards - this.itemsForScore.amountFatalCompareCards) * 100
           ) - this.itemsForScore.timer * 10;
         
+        const person: PersonalData = {
+          firstName: this.regData.firstName,
+          lastName: this.regData.lastName,
+          email: this.regData.email,
+          score: this.score,
+        };
+
+        this.dataBase.addPerson(person);
+        this.dataBase.getAllPersons();
+
         this.view.showModalWindow('win', this.score);
       }
     }
@@ -367,8 +390,6 @@ export default function mvc(app: HTMLElement) {
       const inputs = modalWindow?.querySelectorAll('input');
       const menuButtons = this.app.querySelectorAll('.header-menu__item');
 
-
-   
       // get event on modal window
       addBtn?.addEventListener('click', () => {
         this.clickAddBtnModal();

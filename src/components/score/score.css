@@ -1,0 +1,66 @@
+#wrap-score {
+  display: block;
+}
+
+#wrap-score .score-title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 30px;
+  letter-spacing: 0.15px;
+  color: #333333;
+}
+
+#wrap-score .score-list {
+  width: 100%;
+}
+
+#wrap-score .score-list .item {
+  width: 846px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(33, 33, 33, 0.08);
+}
+
+#wrap-score .score-list .item .item__person {
+  min-width: 400px;
+}
+
+#wrap-score .score-list .item .item__person .item__person-name {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+  letter-spacing: 0.1px;
+  color: #333333;
+}
+
+#wrap-score .score-list .item .item__person .item__person-email {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 15px;
+  letter-spacing: 0.4px;
+  color: #333333;
+}
+
+#wrap-score .score-list .item .item__score {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: 0.15px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+#wrap-score .score-list .item .item__score span {
+  color: #2196f3;
+}
+/*# sourceMappingURL=score.css.map */

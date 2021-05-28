@@ -22,3 +22,10 @@ export interface ItemsForScore {
   amountFatalCompareCards: number,
   timer: number
 }
+
+export interface PersonalData {
+  firstName?: string,
+  lastName?: string,
+  email?: string,
+  score?: number,
+}
