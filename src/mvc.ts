@@ -46,7 +46,7 @@ export default function mvc(app: HTMLElement) {
     }
 
     openSelectedPage(item: Element, dataAllPersons?: PersonalData[]) {
-      const items = this.header.menu.querySelectorAll('.header-menu__item');
+      const items: NodeListOf<Element> = this.header.menu.querySelectorAll('.header-menu__item');
       items.forEach(elem => elem.classList.remove('item-select'));
       item.classList.add('item-select');
 
@@ -141,7 +141,7 @@ export default function mvc(app: HTMLElement) {
     }
 
     showRotate(card: Element) {
-      this.Game.toRotateCard(card)
+      this.Game.toRotateCard(card);
     }
 
     showResultSelect(arrSelect: Element[]) {
@@ -293,9 +293,9 @@ export default function mvc(app: HTMLElement) {
       this.itemsForScore.amountFatalCompareCards = 0;
       this.itemsForScore.timer = 0;
 
-      setTimeout(() => {  //    исправить на 30 секунд
+      setTimeout(() => {
         this.view.rotateAllCards();        
-      }, 3000);
+      }, 30000);
     }
 
     getStopGame(win?: string) {
@@ -316,11 +316,29 @@ export default function mvc(app: HTMLElement) {
           score: this.score,
         };
 
-        this.dataBase.addPerson(person);
-        this.dataBase.getAllPersons();
+        const inDataBase: boolean = this.checkInDataBasePerson(person);
 
+        if (!inDataBase) {
+          this.dataBase.addPerson(person);
+        } else {
+          this.dataBase.upDatePerson(person);
+        }
+    
+        this.dataBase.getAllPersons();
         this.view.showModalWindow('win', this.score);
       }
+    }
+
+    checkInDataBasePerson(person: PersonalData): boolean {
+      let inDataBase: boolean = false;
+      
+      this.dataBase.dataAllPersons.forEach(data => {
+        if (person.email === data.email) {
+          inDataBase = true;
+        }
+      });
+
+      return inDataBase;
     }
 
     async getDataSettings() {

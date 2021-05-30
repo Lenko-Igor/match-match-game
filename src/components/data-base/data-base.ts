@@ -16,12 +16,10 @@ export default class DataBase {
     openRequest.onupgradeneeded = (e: IDBVersionChangeEvent) => {
       const event = e.target as IDBOpenDBRequest
       const thisDB = event.result;
-      console.log('upgr');
       
       if(!thisDB.objectStoreNames.contains('people')) {
         thisDB.createObjectStore('people');
       }
-      
     }
 
     openRequest.onsuccess = (e: Event) => {
@@ -62,5 +60,29 @@ export default class DataBase {
       }
     }
   } 
+
+  upDatePerson(person: PersonalData) {
+    if (this.db) {
+      const transaction: IDBTransaction = this.db.transaction(['people'], 'readwrite');
+      const objectStore: IDBObjectStore = transaction.objectStore('people');
+      const cursor = objectStore.openCursor();
+      
+      cursor.onsuccess = (e: Event) => {
+        const res = cursor.result
+        if (res) {
+          if(res.value.email === person.email){//we find by id an user we want to update
+            var res1 = res.update(person);
+            res1.onsuccess = function(e){
+              console.log("update success!!");
+            }
+            res1.onerror = function(e){
+              console.log("update failed!!");
+            }
+          }
+          res.continue();
+        }
+      }
+    }
+  }
 
 }
